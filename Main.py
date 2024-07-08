@@ -1,4 +1,5 @@
 import os
+import platform
 import streamlit as st
 import time
 
@@ -70,10 +71,11 @@ def display_response(response: str):
 
 def speak_response(response: str):
 
-    # check is 'say' command available (built in to MacOS)
-    # os.system(f"say -v Fred {response}")
-    
-    st.markdown(f"SPEAK: {response}")
+    # check if macOS and if yes, use 'say' command (built in)
+    if "macOS" in platform.platform():
+        os.system(f"say -v Fred {response}")
+    else:    
+        st.markdown(f"SPEAK: {response}")
 
 
 logger.info("Initiated LLM Chat application")
