@@ -1,0 +1,13 @@
+{
+    "use_gpu": false,
+    "load_w_llama_cpp": true,
+    "use_remote_model": false,
+    "model_path": "./models/TinyLlama-1.1B-Chat-v0.3-GGUF/tinyllama-1.1b-chat-v1.0.Q5_K_S.gguf",
+    "llm_style": "llama",
+    "llm_pipeline_kwargs": {
+        "n_ctx": 3000,
+        "temperature": 0,
+        "top_p": 0.95,
+        "use_mlock": true
+    }
+}

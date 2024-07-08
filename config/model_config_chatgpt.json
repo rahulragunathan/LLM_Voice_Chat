@@ -1,0 +1,6 @@
+{
+    "use_gpu": false,
+    "load_w_llama_cpp": false,
+    "use_remote_model": true,
+    "remote_model_source": "ChatGPT"
+}

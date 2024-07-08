@@ -1,0 +1,10 @@
+{
+    "input_variables": [
+        "input_text"
+    ],
+    "output_parser": null,
+    "partial_variables": {},
+    "template": "USER: {input_text} ASSISTANT:",
+    "template_format": "f-string",
+    "validate_template": true
+}

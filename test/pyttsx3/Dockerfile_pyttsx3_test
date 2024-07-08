@@ -1,0 +1,10 @@
+FROM python:3.10
+
+RUN apt-get update && apt-get install -y espeak alsa-utils pulseaudio
+RUN pip install pyttsx3
+
+COPY textspeech.py /speech
+
+WORKDIR /speech
+
+CMD ["python", "textspeech.py"]
