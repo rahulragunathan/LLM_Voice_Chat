@@ -15,7 +15,9 @@ echo "Starting application with values loaded from $ENV_FILE"
 set -a
 source $ENV_FILE
 
-docker compose down --remove-orphans
-docker compose build --no-cache
-docker compose up -d --force-recreate
+# docker compose down --remove-orphans
+# docker compose build --no-cache
+# docker compose up -d --force-recreate
 
+
+streamlit run Main.py --server.port=8502 --server.address=0.0.0.0

@@ -52,22 +52,29 @@ def setup_app():
 
 
 def generate_response(query: str):
-
     response = f"RESPONSE: {query}" 
     # response = mu.query_llm_pipeline(query, st.session_state.llm_pipeline, st.session_state.model_config, st.session_state.llm_prompt)
-
     return response
 
 
 def stream_response(response: str, delay_time:float = 0.05):
-
     # stream response with delay
     for word in response.split():
         yield word + " "
         time.sleep(delay_time)
 
+
+def display_response(response: str):
+    st.write_stream(stream_response(response))
+
+
 def speak_response(response: str):
+
+    # check is 'say' command available (built in to MacOS)
+    # os.system(f"say -v Fred {response}")
+    
     st.markdown(f"SPEAK: {response}")
+
 
 logger.info("Initiated LLM Chat application")
 setup_app()
@@ -96,8 +103,8 @@ if prompt := st.chat_input(os.getenv("INITIAL_CHAT_PROMPT", "How can I assist yo
     # - ii. speak the response
     response = generate_response(prompt)
     with st.chat_message("assistant"):
-        st.write_stream(stream_response())        
-        speak_response()
+        display_response(response)
+        speak_response(response)
 
     # add the response to chat history
     st.session_state.messages.append({"role": "assistant", "content": response})
