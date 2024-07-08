@@ -32,20 +32,15 @@ def setup_app():
             # im.install_models(install_models_config)
             logger.info("Downloaded and installed models")
 
-    else:
-        logger.debug("Using previously loaded config")
-        model_config = st.session_state.model_config
-        prompt_config = st.session_state.prompt_config
-
     # initialize or connect to model
     # build llm query chain from prompt config
     if "llm_prompt" not in st.session_state.keys():
         logger.info("Loading LLM prompt")
-        # st.session_state.llm_prompt = mu.load_prompt_from_config(prompt_config)
+        # st.session_state.llm_prompt = mu.load_prompt_from_config(st.session_state.prompt_config)
 
     if "llm_pipeline" not in st.session_state.keys():
         logger.info("Creating LLM pipeline")
-        # st.session_state.llm_pipeline = mu.create_pipelines(model_config)
+        # st.session_state.llm_pipeline = mu.create_pipelines(st.session_state.model_config)
 
     # initialize chat history
     if "messages" not in st.session_state.keys():
