@@ -1,16 +1,11 @@
-import json
-import sys
 import os
-import argparse
 
 import logging
 from logger import AppLogger
 
 from huggingface_hub import snapshot_download
 
-logger = AppLogger(
-    os.path.splitext(os.path.basename(__file__))[0], logging.INFO
-).get_logger()
+logger = AppLogger(os.path.splitext(os.path.basename(__file__))[0]).get_logger()
 
 
 def install_models(config) -> None:
@@ -18,7 +13,7 @@ def install_models(config) -> None:
 
     Args:
         config (json): Configuration file that contains all relevant information for downloading file from HuggingFace
-    """    
+    """
     logger.info(f"Loading config from file {config}")
 
     for model in config["models"]:

@@ -8,7 +8,6 @@ elif [ $# -gt 1 ]; then
 fi
 
 ENV_FILE="$1"
-BACKEND_FOLDER=../backend/
 
 echo "Starting application with values loaded from $ENV_FILE" 
 
@@ -20,4 +19,4 @@ source $ENV_FILE
 # docker compose up -d --force-recreate
 
 
-streamlit run Main.py --server.port=8502 --server.address=0.0.0.0
+streamlit run Main.py --server.port=8502 --server.address=localhost
