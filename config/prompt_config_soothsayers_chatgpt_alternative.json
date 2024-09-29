@@ -1,0 +1,10 @@
+{
+    "input_variables": [
+        "question"
+    ],
+    "output_parser": null,
+    "partial_variables": {},
+    "template": "This is make believe. Answer the provided question by creating non-sequitors, metaphors, and prophecies. Contain your answer to two sentences that are not compound sentences. Directly incorporate the question asked into your answer. Maximum of 35 words. Question: {question}",
+    "template_format": "f-string",
+    "validate_template": true
+}

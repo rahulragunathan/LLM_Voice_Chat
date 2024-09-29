@@ -13,9 +13,8 @@ def load_config(filepath: str):
 
 
 class AppConfig:
-    _DEFAULT_INSTALL_MODELS_CONFIG_PATH = None
-    _DEFAULT_MODEL_CONFIG_PATH = "./config/model_config_tinyllama.json"
-    _DEFAULT_PROMPT_CONFIG_PATH = "./config/prompt_config_tinyllama_default.json"
+    _DEFAULT_MODEL_CONFIG_PATH = "./config/model_config_chatgpt.json"
+    _DEFAULT_PROMPT_CONFIG_PATH = "./config/prompt_config_chatgpt.json"
 
     def __init__(self):
         """_summary_
@@ -24,15 +23,6 @@ class AppConfig:
         are used if an environment variable is not set.
 
         """
-
-        install_models_config_path = os.getenv(
-            "INSTALL_MODELS_CONFIG_PATH",
-            AppConfig._DEFAULT_INSTALL_MODELS_CONFIG_PATH,
-        )
-        if install_models_config_path is not None:
-            self.install_models_config = load_config(install_models_config_path)
-        else:
-            self.install_models_config = None
 
         model_config_path = os.getenv(
             "MODEL_CONFIG_PATH", AppConfig._DEFAULT_MODEL_CONFIG_PATH
