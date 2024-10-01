@@ -14,4 +14,4 @@ echo "Starting application with values loaded from $ENV_FILE"
 set -a
 source $ENV_FILE
 
-python run app.py
+python app.py

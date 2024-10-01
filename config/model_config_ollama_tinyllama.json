@@ -1,0 +1,7 @@
+{
+    "use_remote_model": false,
+    "model_source": "Ollama",
+    "model_name": "tinyllama",
+    "use_gpu": false,
+    "model_parameters": {}
+}

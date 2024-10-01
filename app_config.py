@@ -15,10 +15,10 @@ def load_config(filepath: str):
 class AppConfig:
     _DEFAULT_MODEL_CONFIG_PATH = "./config/model_config_chatgpt.json"
     _DEFAULT_PROMPT_CONFIG_PATH = "./config/prompt_config_chatgpt.json"
+    _DEFAULT_THEME_CONFIG_PATH = "./config/theme_config_default.json"
 
     def __init__(self):
-        """_summary_
-
+        """
         App config is loaded based on environment variables set at runtime. Default values
         are used if an environment variable is not set.
 
@@ -33,3 +33,8 @@ class AppConfig:
             "PROMPT_CONFIG_PATH", AppConfig._DEFAULT_PROMPT_CONFIG_PATH
         )
         self.prompt_config = load_config(prompt_config_path)
+
+        theme_config_path = os.getenv(
+            "THEME_CONFIG_PATH", AppConfig._DEFAULT_THEME_CONFIG_PATH
+        )
+        self.theme_config = load_config(theme_config_path)

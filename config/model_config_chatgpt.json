@@ -1,8 +1,8 @@
 {
-    "use_gpu": false,
-    "load_w_llama_cpp": false,
     "use_remote_model": true,
-    "remote_model_source": "OpenAI",
-    "remote_model_name": "ChatGPT",
-    "remote_model_version": "o1"
+    "model_source": "OpenAI",
+    "model_name": "GPT-3.5 Turbo",
+    "model_parameters": {
+        "temperature": 1.0
+    }
 }
