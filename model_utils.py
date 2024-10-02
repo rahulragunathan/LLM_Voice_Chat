@@ -6,54 +6,110 @@ from langchain_openai import ChatOpenAI
 from langchain.schema import AIMessage, HumanMessage
 from langchain.prompts import PromptTemplate
 
-import text_to_speech as ts
+_DEFAULT_RESPONSE_PAUSE_TIME = 0
+_DEFAULT_RESPONSE_STREAM_LAG_TIME = 0.1
 
 
 def load_prompt_from_config(prompt_config: dict) -> PromptTemplate:
-    """Load prompts from config files
+    """Creates LangChain PromptTemplate object from dictionary
 
     Args:
-        prompt_config (dict): prompt config field in config file
+        prompt_config (dict): dictionary containing the prompt template configuration
 
     Returns:
-        PromptTemplate: this is the input to the LLM
+        PromptTemplate: LangChain prompt template
     """
     return PromptTemplate(**prompt_config)
 
 
 def load_model(model_config: dict):
+    """Load the large language model.
+    Currently supported model sources: OpenAI
+
+    Args:
+        model_config (dict): a dictionary describing properties and hyperparameters for the model
+
+    Raises:
+        ValueError: if model configuration is not supported
+
+    Returns:
+        model: an instance of a loaded large language model (either remote or local)
+    """
     if (
         model_config.get("use_remote_model", False)
         and model_config["model_source"] == "OpenAI"
     ):
-        return load_open_ai_model(model_config=model_config)
+        return _load_open_ai_model(model_config=model_config)
     else:
         raise ValueError("Model configuration not yet supported.")
 
 
-def load_open_ai_model(model_config: dict) -> ChatOpenAI:
+def _load_open_ai_model(model_config: dict) -> ChatOpenAI:
+    """Load the large language model from Open AI.
+
+    Args:
+        model_config (dict): a dictionary describing properties and hyperparameters for the model
+
+    Returns:
+        ChatOpenAI: the model from Open AI
+    """
     return ChatOpenAI(
         model=model_config["model_name"], **model_config["model_parameters"]
     )
 
 
-def stream_message(message):
-    time.sleep(int(os.getenv("MESSAGE_PAUSE_TIME", "0")))
+def stream_response(message: str, response_config: dict) -> str:
+    """Stream the response to the interface. The response configuration can set the following two parameters:
+        1. response_pause_time: the number of seconds to wait before starting streaming.
+        2.response_stream_lag_time: the number of seconds to lag while streaming.
 
-    message_lag = float(os.getenv("MESSAGE_LAG_TIME", "0.3"))
+    Args:
+        message (str): the message to be streamed
+        response_config (dict): configurations for the response
 
-    for i in range(len(message)):
-        time.sleep(message_lag)
-        yield message[: i + 1]
+    Returns:
+        str: the streamed response
+    """
+    # time.sleep(response_config.get("response_pause_time", _DEFAULT_RESPONSE_PAUSE_TIME))
+
+    # for i in range(len(message)):
+    #     time.sleep(
+    #         response_config.get(
+    #             "response_stream_lag_time", _DEFAULT_RESPONSE_STREAM_LAG_TIME
+    #         )
+    #     )
+    #     yield message[: i + 1]
+    return message
 
 
-def get_llm_response(message, history, model_config, llm, system_prompt_template):
+def get_llm_response(
+    message: str,
+    history,
+    model_config: dict,
+    llm,
+    system_prompt_template: PromptTemplate,
+) -> str:
+    """Get the response from the large language model
+
+    Args:
+        message (str): the user's most recent prompt
+        history (list[(str, str)]): the chat history between the user and the application
+        model_config (dict): the configuration for the model
+        llm: the large language model
+        system_prompt_template (PromptTemplate): the system prompt template for the chat
+
+    Raises:
+        ValueError: if model configuration is not supported
+
+    Returns:
+        str: the response from the model
+    """
     if (
         model_config.get("use_remote_model", False)
         and model_config["model_source"] == "OpenAI"
     ):
 
-        return predict_open_ai(
+        return _get_open_ai_response(
             message=message,
             history=history,
             llm=llm,
@@ -63,7 +119,20 @@ def get_llm_response(message, history, model_config, llm, system_prompt_template
         raise ValueError("Model configuration not yet supported.")
 
 
-def predict_open_ai(message, history, llm, system_prompt_template):
+def _get_open_ai_response(
+    message: str, history, llm, system_prompt_template: PromptTemplate
+) -> str:
+    """Get the response from the large language model from Open AI
+
+    Args:
+        message (str): the user's most recent prompt
+        history (list[(str, str)]): the chat history between the user and the application
+        llm: the large language model
+        system_prompt_template (PromptTemplate): the system prompt template for the chat
+
+    Returns:
+        str: the response from the OpenAI model
+    """
     history_langchain_format = []
 
     prompt_text = system_prompt_template.format(question=message)

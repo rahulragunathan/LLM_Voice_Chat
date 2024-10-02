@@ -1,0 +1,6 @@
+{
+    "response_pause_time": 0,
+    "response_stream_lag_time": 0.2,
+    "use_mac_os_speech": true,
+    "speech_rate_wpm": 150
+}
