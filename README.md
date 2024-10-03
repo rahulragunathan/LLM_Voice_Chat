@@ -3,5 +3,11 @@ A Python frontend (built using Gradio and LangChain) for talking to ChatGPT or a
 
 ## Prerequisites
 
-* Python
-* A bash terminal
+* Python 3.11
+
+Install the dependencies in Python or in a Python virtual environment:
+
+``pip install -r requirements.txt``
+
+* Ollama (if using a local Ollama model)
+* OpenAI API Key (if using ChatGPT)
