@@ -5,8 +5,5 @@ openai
 langchain
 langchain-openai
 langchain-community
+langchain-ollama
 pyttsx3
-
-# apt installed the following libraries
-# espeak
-# alsa-utils
