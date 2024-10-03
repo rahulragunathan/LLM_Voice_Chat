@@ -11,3 +11,11 @@ Install the dependencies in Python or in a Python virtual environment:
 
 * Ollama (if using a local Ollama model)
 * OpenAI API Key (if using ChatGPT)
+
+
+Remaining features for v1.0:
+
+- Integrate w/ Ollama
+- Choose a voice for python voice
+- Theme configuration
+- Update this readme with how to configure, etc.

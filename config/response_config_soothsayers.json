@@ -1,4 +1,5 @@
 {
+    "speak_responses": true,
     "response_pause_time": 30,
     "response_stream_lag_time": 0.04,
     "use_mac_os_speech": true,

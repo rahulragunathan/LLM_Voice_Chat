@@ -1,6 +1,5 @@
 import os
 import time
-from typing import Generator
 from threading import Thread
 
 import gradio as gr
@@ -75,12 +74,13 @@ def get_response(
     logger.debug(f"Sleeping for {sleep_time} seconds")
     time.sleep(sleep_time)
 
-    logger.debug(f"Speaking message")
-    speech_thread = Thread(
-        target=ts.speak_message,
-        args=(response, chat_app_config.response_config, speech_engine),
-    )
-    speech_thread.start()
+    if chat_app_config.response_config.get("speak_responses", True):
+        logger.debug(f"Speaking message")
+        speech_thread = Thread(
+            target=ts.speak_message,
+            args=(response, chat_app_config.response_config, speech_engine),
+        )
+        speech_thread.start()
 
     logger.debug(f"Streaming message")
     for i in range(len(response)):
@@ -103,7 +103,7 @@ gr.ChatInterface(
         container=False,
         scale=2,
     ),
-    title=os.getenv("APP_NAME", "Gradio Chat"),
+    title=os.getenv("APP_NAME", "LLM Chat"),
     theme="soft",
     retry_btn=None,
     undo_btn=None,
