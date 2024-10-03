@@ -6,9 +6,6 @@ from langchain_openai import ChatOpenAI
 from langchain.schema import AIMessage, HumanMessage
 from langchain.prompts import PromptTemplate
 
-_DEFAULT_RESPONSE_PAUSE_TIME = 0
-_DEFAULT_RESPONSE_STREAM_LAG_TIME = 0.1
-
 
 def load_prompt_from_config(prompt_config: dict) -> PromptTemplate:
     """Creates LangChain PromptTemplate object from dictionary
@@ -56,30 +53,6 @@ def _load_open_ai_model(model_config: dict) -> ChatOpenAI:
     return ChatOpenAI(
         model=model_config["model_name"], **model_config["model_parameters"]
     )
-
-
-def stream_response(message: str, response_config: dict) -> str:
-    """Stream the response to the interface. The response configuration can set the following two parameters:
-        1. response_pause_time: the number of seconds to wait before starting streaming.
-        2.response_stream_lag_time: the number of seconds to lag while streaming.
-
-    Args:
-        message (str): the message to be streamed
-        response_config (dict): configurations for the response
-
-    Returns:
-        str: the streamed response
-    """
-    # time.sleep(response_config.get("response_pause_time", _DEFAULT_RESPONSE_PAUSE_TIME))
-
-    # for i in range(len(message)):
-    #     time.sleep(
-    #         response_config.get(
-    #             "response_stream_lag_time", _DEFAULT_RESPONSE_STREAM_LAG_TIME
-    #         )
-    #     )
-    #     yield message[: i + 1]
-    return message
 
 
 def get_llm_response(

@@ -74,6 +74,14 @@ def pyttsx3_speak(message: str, speech_engine: pyttsx3.Engine) -> None:
         message (str): the message to be spoken
         speech_engine (pyttsx3.Engine): initialized speech engine
     """
+
+    # This is an open bug in pyttsx3; without this, raises RuntimeError: run loop already started
+    # The loop doesn't seem to get closed properly when the queue is finished
+    # see this fix suggestion from https://github.com/nateshmbhat/pyttsx3/issues/193
+    # See also event loop reference: https://pyttsx3.readthedocs.io/en/latest/engine.html#using-an-external-event-loop
+    if speech_engine._inLoop:
+        speech_engine.endLoop()
+
     speech_engine.say(message)
     speech_engine.runAndWait()
 
