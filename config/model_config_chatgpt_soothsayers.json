@@ -1,0 +1,8 @@
+{
+    "use_remote_model": true,
+    "model_source": "OpenAI",
+    "model_name": "gpt-4o-mini",
+    "model_parameters": {
+        "temperature": 1.0
+    }
+}

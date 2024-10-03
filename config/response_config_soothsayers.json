@@ -1,6 +1,7 @@
 {
-    "response_pause_time": 0,
-    "response_stream_lag_time": 0.1,
+    "response_pause_time": 30,
+    "response_stream_lag_time": 0.04,
     "use_mac_os_speech": true,
+    "voice_name": "Fred",
     "speech_rate_wpm": 140
 }

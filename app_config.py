@@ -19,8 +19,8 @@ def load_config(filepath: str) -> dict:
 
 
 class AppConfig:
-    _DEFAULT_MODEL_CONFIG_PATH = "./config/model_config_chatgpt.json"
-    _DEFAULT_PROMPT_CONFIG_PATH = "./config/prompt_config_chatgpt.json"
+    _DEFAULT_MODEL_CONFIG_PATH = "./config/model_config_chatgpt_default.json"
+    _DEFAULT_PROMPT_CONFIG_PATH = "./config/prompt_config_chatgpt_default.json"
     _DEFAULT_RESPONSE_CONFIG_PATH = "./config/response_config_default.json"
     _DEFAULT_THEME_CONFIG_PATH = "./config/theme_config_default.json"
 

@@ -5,6 +5,9 @@ import platform
 
 
 _DEFAULT_SPEECH_RATE_WPM = 180
+# TODO: figure this out
+_DEFAULT_PYTTSX3_VOICE = ""
+_DEFAULT_MAC_OS_VOICE = "Fred"
 
 
 def initialize_text_to_speech(
@@ -62,6 +65,9 @@ def speak_message(
             speech_rate_wpm=speech_config.get(
                 "speech_rate_wpm", _DEFAULT_SPEECH_RATE_WPM
             ),
+            voice_name=speech_config.get(
+                "voice_name", _DEFAULT_MAC_OS_VOICE
+            ),
         )
     else:
         pyttsx3_speak(message=message, speech_engine=speech_engine)
@@ -86,11 +92,12 @@ def pyttsx3_speak(message: str, speech_engine: pyttsx3.Engine) -> None:
     speech_engine.runAndWait()
 
 
-def mac_os_speak(message: str, speech_rate_wpm: int) -> None:
+def mac_os_speak(message: str, speech_rate_wpm: int, voice_name: str = _DEFAULT_MAC_OS_VOICE) -> None:
     """Speak the message using the MacOS 'say' command.
 
     Args:
         message (str): the message to be spoken
         speech_rate_wpm (int): the speed at which the message should be spoken
+        voice_name (str): the Mac OS voice to use. Default is "Fred".
     """
-    subprocess.run(["say", message, "-r", str(speech_rate_wpm)])
+    subprocess.run(["say", message, "-r", str(speech_rate_wpm), "-v", voice_name])

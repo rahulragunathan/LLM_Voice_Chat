@@ -109,4 +109,5 @@ gr.ChatInterface(
     undo_btn=None,
     clear_btn=None,
     fill_height=True,
+    analytics_enabled=False,
 ).launch()
