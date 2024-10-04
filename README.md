@@ -17,6 +17,5 @@ Note: this does NOT seem to run in WSL (unless you figure out how to share the d
 
 Remaining features for v1.0:
 
-- Integrate w/ Ollama
 - Theme configuration
 - Update this readme with how to install, configure, etc.
