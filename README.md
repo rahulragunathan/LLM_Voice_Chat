@@ -12,10 +12,11 @@ Install the dependencies in Python or in a Python virtual environment:
 * Ollama (if using a local Ollama model)
 * OpenAI API Key (if using ChatGPT)
 
+Note: this does NOT seem to run in WSL (unless you figure out how to share the devices natively)
+
 
 Remaining features for v1.0:
 
 - Integrate w/ Ollama
-- Choose a voice for python voice
 - Theme configuration
-- Update this readme with how to configure, etc.
+- Update this readme with how to install, configure, etc.
