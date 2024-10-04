@@ -1,5 +1,7 @@
 {
     "source_theme": "soft",
     "load_theme_from_hf_hub": false,
-    "primary_hue": "red"
+    "primary_hue": "red",
+    "font": ["IBM Plex Mono", "ui-monospace", "Consolas", "monospace"],
+    "font_mono": ["IBM Plex Mono", "ui-monospace", "Consolas", "monospace"]
 }
