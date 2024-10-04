@@ -4,18 +4,27 @@ A Python frontend (built using Gradio and LangChain) for talking to ChatGPT or a
 ## Prerequisites
 
 * Python 3.11
+* [Ollama](https://ollama.com/) (if using a local Ollama model)
+* [An OpenAI API Key](https://platform.openai.com/api-keys) (if using ChatGPT)
 
-Install the dependencies in Python or in a Python virtual environment:
+## Set Up
+
+Once the pre-requisites are met, install the dependencies in your Python environment. Usage of a Python virtual environment is recommended.
 
 ``pip install -r requirements.txt``
 
-* Ollama (if using a local Ollama model)
-* OpenAI API Key (if using ChatGPT)
+Create an environment file
 
-Note: this does NOT seem to run in WSL (unless you figure out how to share the devices natively)
+## Usage
 
+On MacOs and Linux>:
 
-Remaining features for v1.0:
+```
+.\start_app.sh path/to/env/file
+```
 
-- Theme configuration
-- Update this readme with how to install, configure, etc.
+On Windows>:
+
+```
+.\start_app.bat path/to/env/file
+```

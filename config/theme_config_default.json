@@ -1,3 +1,4 @@
 {
-    "placeholder": "text"
+    "source_theme": "soft",
+    "load_theme_from_hf_hub": false
 }
