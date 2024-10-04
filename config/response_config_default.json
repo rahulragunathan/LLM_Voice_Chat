@@ -1,6 +1,5 @@
 {
     "speak_responses": true,
-    "response_pause_time": 0,
     "response_stream_lag_time": 0.1,
     "use_mac_os_speech": false,
     "voice_name": "Microsoft David Desktop - English (United States)",

@@ -1,5 +1,5 @@
 import os
-import time
+from time import sleep
 from threading import Thread
 from typing import Generator
 
@@ -17,7 +17,6 @@ _DEFAULT_APP_NAME = "LLM Chat"
 _DEFAULT_CHAT_PLACEHOLDER_TEXT = "Please ask me a question."
 _DEFAULT_TEXTBOX_PLACEHOLDER_TEXT = "Please ask me a question."
 _DEFAULT_APP_THEME = "Soft"
-_DEFAULT_RESPONSE_PAUSE_TIME = 0
 _DEFAULT_RESPONSE_STREAM_LAG_TIME = 0.1
 
 logger.info("Initiated LLM Chat application")
@@ -91,14 +90,7 @@ def get_response(
     response = mu.get_llm_response(
         message, history, chat_app_config.model_config, llm, system_prompt_template
     )
-    logger.debug(f"Received the following response:\n{response}")
-
-    sleep_time = chat_app_config.response_config.get(
-        "response_pause_time", _DEFAULT_RESPONSE_PAUSE_TIME
-    )
-
-    logger.debug(f"Sleeping for {sleep_time} seconds")
-    time.sleep(sleep_time)
+    logger.debug(f"Received the following response from the model:\n{response}")
 
     if chat_app_config.response_config.get("speak_responses", True):
         logger.debug(f"Speaking message")
@@ -110,7 +102,7 @@ def get_response(
 
     logger.debug(f"Streaming message")
     for i in range(len(response)):
-        time.sleep(
+        sleep(
             chat_app_config.response_config.get(
                 "response_stream_lag_time", _DEFAULT_RESPONSE_STREAM_LAG_TIME
             )
