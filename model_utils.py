@@ -159,7 +159,7 @@ def _get_open_ai_response(
 
     history_langchain_format.append(HumanMessage(content=prompt_text))
 
-    gpt_response = llm(history_langchain_format)
+    gpt_response = llm.invoke(history_langchain_format)
     return gpt_response.content
 
 
