@@ -66,7 +66,7 @@ def _pull_ollama_model(model_config: dict) -> None:
     Args:
         model_config (dict): model configuration that includes the name of the model, e.g. tinyllama, llama3.1, etc.
     """
-    subprocess.run(f"ollama pull {model_config['model_name']}")
+    subprocess.run(f"ollama pull {model_config['model_name']}", shell=True)
 
 
 def _load_ollama_model(model_config: dict) -> OllamaLLM:
