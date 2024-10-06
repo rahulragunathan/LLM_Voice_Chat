@@ -96,7 +96,7 @@ def get_response(
         logger.debug(f"Speaking message")
         speech_thread = Thread(
             target=ts.speak_message,
-            args=(response, chat_app_config.response_config, speech_engine),
+            args=(response, speech_engine),
         )
         speech_thread.start()
 
