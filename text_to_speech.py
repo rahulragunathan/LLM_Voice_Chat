@@ -25,9 +25,7 @@ def initialize_text_to_speech(
     """
     if running_on_windows():
         logger.debug("Using pystxx3 speech on Windows")
-        voice_name = speech_config.get(
-            "voice_name", _DEFAULT_WINDOWS_VOICE
-        )
+        voice_name = speech_config.get("voice_name", _DEFAULT_WINDOWS_VOICE)
     elif running_on_mac_os:
         logger.debug("Using pystxx3 speech on Mac")
         voice_name = speech_config.get("voice_name", _DEFAULT_MAC_OS_VOICE)
@@ -37,17 +35,20 @@ def initialize_text_to_speech(
 
     # create engine
     speech_engine = pyttsx3.init()
+
+    # set voice
+    if voice_name is not None:
+        voice_id = get_voice_id(speech_engine, voice_name)
+        logger.debug(f"Using voice ID {voice_id} for voice {voice_name}")
+        speech_engine.setProperty("voice", voice_id)
+
+    # set speech rate
     speech_engine.setProperty(
-            "rate", speech_config.get("speech_rate_wpm", _DEFAULT_SPEECH_RATE_WPM)
+        "rate", speech_config.get("speech_rate_wpm", _DEFAULT_SPEECH_RATE_WPM)
     )
 
-    if voice_name is not None:
-        speech_engine.setProperty(
-                "voice", get_voice_id(speech_engine, voice_name)
-        )
-    logger.debug(f"Using voice {speech_engine.getProperty('voice')}")
-
     return speech_config, speech_engine
+
 
 def running_on_mac_os() -> bool:
     """Check whether running on MacOS
@@ -56,6 +57,7 @@ def running_on_mac_os() -> bool:
         bool: whether true or false
     """
     return "mac" in platform.platform().lower()
+
 
 def running_on_windows() -> bool:
     """Check whether running on Windows
@@ -66,7 +68,7 @@ def running_on_windows() -> bool:
     return "windows" in platform.platform().lower()
 
 
-def get_voice_id(speech_engine: pyttsx3.Engine, voice_name: str):
+def get_voice_id(speech_engine: pyttsx3.Engine, voice_name: str) -> str | None:
     """Get the the ID for a given voice in pyttsx3
 
     Args:
@@ -74,18 +76,16 @@ def get_voice_id(speech_engine: pyttsx3.Engine, voice_name: str):
         voice_name (str): the name of the voice
 
     Returns:
-        int: the ID associated with the voice name
+        str | None: the ID associated with the voice name. If voice is not found, return None.
     """
-    return (
-        voice.id
-        for voice in speech_engine.getProperty("voices")
-        if voice.name == voice_name
-    )
+    voices = speech_engine.getProperty("voices")
+    for voice in voices:
+        if voice.name == voice_name:
+            return voice.id
+    return None
 
 
-def speak_message(
-    message: str, speech_engine: pyttsx3.Engine
-) -> None:
+def speak_message(message: str, speech_engine: pyttsx3.Engine) -> None:
     """Speak the message provided using the pyttsx3 speech engine.
 
     Args:

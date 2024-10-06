@@ -19,29 +19,6 @@ _DEFAULT_TEXTBOX_PLACEHOLDER_TEXT = "Please ask me a question."
 _DEFAULT_APP_THEME = "Soft"
 _DEFAULT_RESPONSE_STREAM_LAG_TIME = 0.1
 
-logger.info("Initiated LLM Chat application")
-
-# Load configurations
-
-logger.info("Creating application configuration based on environment variables")
-chat_app_config = app_config.AppConfig()
-logger.info("Loaded application configuration")
-
-logger.info("Loading model")
-llm = mu.load_model(chat_app_config.model_config)
-system_prompt_template = mu.load_prompt_from_config(chat_app_config.prompt_config)
-
-logger.info("Loading text to speech engine")
-chat_app_config.response_config, speech_engine = ts.initialize_text_to_speech(
-    chat_app_config.response_config
-)
-
-logger.debug(f"Model Config:\n {chat_app_config.model_config}")
-logger.debug(f"Prompt Config:\n {chat_app_config.prompt_config}")
-logger.debug(f"Response Config:\n {chat_app_config.response_config}")
-logger.debug(f"Theme Config:\n {chat_app_config.theme_config}")
-
-
 def load_app_theme(theme_config: dict) -> gr.themes.ThemeClass:
     """Load the application theme from the theme configuration.
         The `source_theme` property of the theme_config can be used to specify the base underlying theme, ex. 'soft', 'monochrome', etc.
@@ -67,7 +44,6 @@ def load_app_theme(theme_config: dict) -> gr.themes.ThemeClass:
             del custom_theme_config["load_theme_from_hf_hub"]
         source_theme_class = getattr(gr.themes, source_theme_name)
         return source_theme_class(**custom_theme_config)
-
 
 def get_response(
     message,
@@ -109,6 +85,31 @@ def get_response(
         )
         yield response[: i + 1]
 
+
+### START OF APPLICATION ###
+logger.info("Initiated LLM Chat application")
+
+# Load configurations
+
+logger.info("Creating application configuration based on environment variables")
+chat_app_config = app_config.AppConfig()
+logger.info("Loaded application configuration")
+
+logger.debug(f"Model Config:\n {chat_app_config.model_config}")
+logger.debug(f"Prompt Config:\n {chat_app_config.prompt_config}")
+logger.debug(f"Response Config:\n {chat_app_config.response_config}")
+logger.debug(f"Theme Config:\n {chat_app_config.theme_config}")
+
+# Load Models
+
+logger.info("Loading model")
+llm = mu.load_model(chat_app_config.model_config)
+system_prompt_template = mu.load_prompt_from_config(chat_app_config.prompt_config)
+
+logger.info("Loading text to speech engine")
+chat_app_config.response_config, speech_engine = ts.initialize_text_to_speech(
+    chat_app_config.response_config
+)
 
 gr.ChatInterface(
     get_response,
