@@ -26,7 +26,7 @@ def initialize_text_to_speech(
     if running_on_windows():
         logger.debug("Using pystxx3 speech on Windows")
         voice_name = speech_config.get("voice_name", _DEFAULT_WINDOWS_VOICE)
-    elif running_on_mac_os:
+    elif running_on_mac_os():
         logger.debug("Using pystxx3 speech on Mac")
         voice_name = speech_config.get("voice_name", _DEFAULT_MAC_OS_VOICE)
     else:
