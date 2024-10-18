@@ -1,4 +1,4 @@
-# LLM_Chat
+# LLM Voice Chat
 A Python frontend (built using Gradio and LangChain) for talking to ChatGPT or any local model of one's choosing. Can speak your responses out-loud in a robot :robot: voice!
 
 ## Prerequisites
