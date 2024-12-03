@@ -19,6 +19,7 @@ _DEFAULT_TEXTBOX_PLACEHOLDER_TEXT = "Please ask me a question."
 _DEFAULT_APP_THEME = "Soft"
 _DEFAULT_RESPONSE_STREAM_LAG_TIME = 0.1
 
+
 def load_app_theme(theme_config: dict) -> gr.themes.ThemeClass:
     """Load the application theme from the theme configuration.
         The `source_theme` property of the theme_config can be used to specify the base underlying theme, ex. 'soft', 'monochrome', etc.
@@ -44,6 +45,7 @@ def load_app_theme(theme_config: dict) -> gr.themes.ThemeClass:
             del custom_theme_config["load_theme_from_hf_hub"]
         source_theme_class = getattr(gr.themes, source_theme_name)
         return source_theme_class(**custom_theme_config)
+
 
 def get_response(
     message,
@@ -124,9 +126,7 @@ gr.ChatInterface(
     ),
     title=os.getenv("APP_NAME", _DEFAULT_APP_NAME),
     theme=load_app_theme(chat_app_config.theme_config),
-    retry_btn=None,
-    undo_btn=None,
-    clear_btn=None,
     fill_height=True,
     analytics_enabled=False,
+    type="messages",
 ).launch()
