@@ -1,11 +1,13 @@
 # LLM Voice Chat
-A Python frontend (built using Gradio and LangChain) for talking to ChatGPT or any local model of one's choosing. Can speak your responses out-loud in a robot :robot: voice!
+A Python frontend (built using Gradio and LangChain) for talking to ChatGPT or any local model of one's choosing. Speak your responses out-loud in a robot :robot: voice!
 
 ## Prerequisites
 
 * Python 3.11
-* Local Model: [Ollama](https://ollama.com/)
-* If using ChatGPT: [An OpenAI API Key](https://platform.openai.com/api-keys)
+
+You can one of the following models:
+* Local: [Ollama](https://ollama.com/)
+* OpenAI ChatGPT: [An OpenAI API Key](https://platform.openai.com/api-keys)
 
 ## Set Up
 
