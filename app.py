@@ -6,10 +6,9 @@ from typing import Generator
 import gradio as gr
 
 import app_config
-from logger import AppLogger
-
 import model_utils as mu
 import text_to_speech as ts
+from logger import AppLogger
 
 logger = AppLogger(os.path.splitext(os.path.basename(__file__))[0]).get_logger()
 
@@ -18,6 +17,7 @@ _DEFAULT_CHAT_PLACEHOLDER_TEXT = "Please ask me a question."
 _DEFAULT_TEXTBOX_PLACEHOLDER_TEXT = "Please ask me a question."
 _DEFAULT_APP_THEME = "Soft"
 _DEFAULT_RESPONSE_STREAM_LAG_TIME = 0.1
+_DEFAULT_RESPONSE_DELAY_TIME = 0
 
 
 def load_app_theme(theme_config: dict) -> gr.themes.ThemeClass:
@@ -53,8 +53,10 @@ def get_response(
 ) -> Generator:
     """Get a response for the user's prompt. The response can also streamed by
     setting the following two parameters in the response configuration:
-        1. response_pause_time: the number of seconds to wait before starting streaming.
+        1. response_delay_time: the number of seconds to wait before starting streaming.
         2.response_stream_lag_time: the number of seconds to lag while streaming.
+        3. speech_rate_wpm: The number of words per minutes for the text-to-speech engine
+
 
     Args:
         message (str): the message to be streamed
@@ -69,6 +71,12 @@ def get_response(
         message, history, chat_app_config.model_config, llm, system_prompt_template
     )
     logger.debug(f"Received the following response from the model:\n{response}")
+
+    sleep(
+        chat_app_config.response_config.get(
+            "response_delay_time", _DEFAULT_RESPONSE_DELAY_TIME
+        )
+    )
 
     if chat_app_config.response_config.get("speak_responses", True):
         logger.debug(f"Speaking message")
@@ -108,10 +116,11 @@ logger.info("Loading model")
 llm = mu.load_model(chat_app_config.model_config)
 system_prompt_template = mu.load_prompt_from_config(chat_app_config.prompt_config)
 
-logger.info("Loading text to speech engine")
-chat_app_config.response_config, speech_engine = ts.initialize_text_to_speech(
-    chat_app_config.response_config
-)
+if chat_app_config.response_config.get("speak_responses", True):
+    logger.info("Loading text to speech engine")
+    chat_app_config.response_config, speech_engine = ts.initialize_text_to_speech(
+        chat_app_config.response_config
+    )
 
 gr.ChatInterface(
     get_response,
