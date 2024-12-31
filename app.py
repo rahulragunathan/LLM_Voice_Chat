@@ -40,7 +40,14 @@ def load_app_theme(theme_config: dict) -> gr.themes.ThemeClass:
         )
     else:
         custom_theme_config = theme_config.copy()
-        del custom_theme_config["source_theme"]
+        if "app_name" in custom_theme_config.keys():
+            del custom_theme_config["app_name"]
+        if "chat_placeholder_text" in custom_theme_config.keys():
+            del custom_theme_config["chat_placeholder_text"]
+        if "textbox_placeholder_text" in custom_theme_config.keys():
+            del custom_theme_config["textbox_placeholder_text"]
+        if "source_theme" in custom_theme_config.keys():
+            del custom_theme_config["source_theme"]
         if "load_theme_from_hf_hub" in custom_theme_config.keys():
             del custom_theme_config["load_theme_from_hf_hub"]
         source_theme_class = getattr(gr.themes, source_theme_name)
@@ -125,15 +132,15 @@ if chat_app_config.response_config.get("speak_responses", True):
 gr.ChatInterface(
     get_response,
     chatbot=gr.Chatbot(
-        placeholder=f"<strong>{os.getenv('CHAT_PLACEHOLDER_TEXT', _DEFAULT_CHAT_PLACEHOLDER_TEXT)}</strong>",
+        placeholder=f"<strong>{chat_app_config.theme_config.get('chat_placeholder_text', _DEFAULT_CHAT_PLACEHOLDER_TEXT)}</strong>",
         scale=8,
     ),
     textbox=gr.Textbox(
-        placeholder=f"{os.getenv('TEXTBOX_PLACEHOLDER_TEXT', _DEFAULT_TEXTBOX_PLACEHOLDER_TEXT)}",
+        placeholder=f"{chat_app_config.theme_config.get('textbox_placeholder_text', _DEFAULT_TEXTBOX_PLACEHOLDER_TEXT)}",
         container=False,
         scale=2,
     ),
-    title=os.getenv("APP_NAME", _DEFAULT_APP_NAME),
+    title=chat_app_config.theme_config.get("app_name", _DEFAULT_APP_NAME),
     theme=load_app_theme(chat_app_config.theme_config),
     fill_height=True,
     analytics_enabled=False,
