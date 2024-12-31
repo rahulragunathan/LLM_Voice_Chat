@@ -3,32 +3,35 @@ A Python frontend (built using Gradio and LangChain) for talking to ChatGPT or a
 
 ## Prerequisites
 
-* Python 3.11
+You can use LLMs from the following sources:
 
-You can one of the following models:
-* Local: [Ollama](https://ollama.com/)
-* OpenAI ChatGPT: [An OpenAI API Key](https://platform.openai.com/api-keys)
+* [Ollama](https://ollama.com/)
+* OpenAI
 
-## Set Up
+To use OpenAI models, you will need to create an [OpenAI API Key](https://platform.openai.com/api-keys) and have credits to access your model of choice.  
+**Note that is *NOT* the same as upgrading to a ChatGPT paid plan (ChatGPT Plus, Pro, etc.).**
 
-Once the pre-requisites are met, install the required libraries in your Python environment using the command below.
+Once the above are met, install the required libraries in your Python environment:
 
 ``pip install -r requirements.txt``
 
-Usage of a Python virtual environment is recommended.
+Python 3.11 and usage of a Python virtual environment are recommended.
 
+## Configuring the Application
 
-## Create an environment file
+### Create an environment file
+ 
+## Starting the Application
 
-## Usage
+Run the command below for your operating system:
 
-On MacOs and Linux>:
+On MacOs and Linux (or other bash terminal):
 
 ```
 .\start_app.sh path/to/env/file
 ```
 
-On Windows>:
+On Windows:
 
 ```
 .\start_app.bat path/to/env/file
