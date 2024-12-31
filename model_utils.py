@@ -125,7 +125,7 @@ def get_llm_response(
 
         return _get_open_ai_response(
             message=message,
-            history=history,
+            message_history=history,
             llm=llm,
             system_prompt_template=system_prompt_template,
             send_chat_history=send_chat_history,
@@ -145,7 +145,7 @@ def get_llm_response(
 
 def _get_open_ai_response(
     message: str,
-    history,
+    message_history,
     llm,
     system_prompt_template: PromptTemplate,
     send_chat_history: bool,
@@ -154,7 +154,7 @@ def _get_open_ai_response(
 
     Args:
         message (str): the user's most recent prompt
-        history (list[(str, str)]): the chat history between the user and the application
+        message_history (list[(str, str)]): the chat history between the user and the application
         llm: the large language model
         system_prompt_template (PromptTemplate): the system prompt template for the chat
         send_chat_history: whether to send the chat history for generating the response
@@ -162,25 +162,24 @@ def _get_open_ai_response(
     Returns:
         str: the response from the OpenAI model
     """
-    history_langchain_format = []
+    message_history_list = []
 
     prompt_text = system_prompt_template.format(question=message)
 
-    if send_chat_history and history is not None and len(history) > 0:
+    if send_chat_history and message_history is not None and len(message_history) > 0:
         logger.debug(
-            f"Sending chat history to model. Received the following: {history}"
+            f"Sending chat history to model. Received the following: {message_history}"
         )
-        for history_message in history:
+        for history_message in message_history:
             message_container = (
                 HumanMessage if history_message["role"] == "user" else AIMessage
             )
-            history_langchain_format.append(
+            message_history_list.append(
                 message_container(content=history_message["content"])
             )
-    else:
-        history_langchain_format = [HumanMessage(content=prompt_text)]
+    message_history_list.append(HumanMessage(content=prompt_text))
 
-    gpt_response = llm.invoke(history_langchain_format)
+    gpt_response = llm.invoke(message_history_list)
     return gpt_response.content
 
 
@@ -203,8 +202,6 @@ def _get_ollama_response(
     Returns:
         str: the response from the Ollama model
     """
-
-    # TODO: send chat history for Ollama model
 
     chain = system_prompt_template | llm
     return chain.invoke(message)
