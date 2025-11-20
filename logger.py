@@ -1,20 +1,65 @@
+"""
+Application Logging Module
+
+Provides a custom logging class for the LLM Voice Chat application with
+configurable log levels via environment variables.
+
+Features:
+- Configurable logging level via APP_LOG_LEVEL environment variable
+- Formatted output with timestamps to stdout
+- Support for standard Python logging levels (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+- Automatic fallback to INFO level if no valid level is specified
+- Per-module logger instances with consistent formatting
+"""
+
 import sys
 import os
 import logging
 
 
 class AppLogger:
-    """Creates a class for logging. The appropriate logging level can be set using the
-    environmental variable APP_LOG_LEVEL."""
+    """Custom logger class for the LLM Voice Chat application.
+
+    Creates logger instances with configurable logging levels set via the
+    APP_LOG_LEVEL environment variable. All log output is sent to stdout with
+    a standardized timestamp format.
+
+    Environment Variables:
+        APP_LOG_LEVEL: Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+            Defaults to INFO if not set or if an invalid level is provided
+
+    Attributes:
+        logger_name (str): Name of the logger instance
+        log_level (str): The logging level for this logger
+
+    Example:
+        >>> logger = AppLogger("my_module").get_logger()
+        >>> logger.info("Application started")
+        2025-11-19 12:00:00 INFO my_module: Application started
+    """
 
     _LOG_DEFAULT_LEVEL = "INFO"
 
     def __init__(self, logger_name: str, log_level: str = None) -> None:
-        """Constructor for the App Logger. By default, the logging level is set to INFO.
+        """Initialize an AppLogger instance.
+
+        Creates a logger with the specified name and optional log level. If no log
+        level is provided, it will be loaded from the APP_LOG_LEVEL environment
+        variable, defaulting to INFO if not set.
 
         Args:
-            logger_name (str): the name for the logger
-            log_level (str): the logging level for the logger, e.g. DEBUG, INFO, etc. (Optional)
+            logger_name (str): Name identifier for the logger, typically the module name.
+                Use os.path.splitext(os.path.basename(__file__))[0] to auto-generate
+                from the current file.
+            log_level (str, optional): Explicit logging level to use (DEBUG, INFO, WARNING,
+                ERROR, CRITICAL). If None, reads from APP_LOG_LEVEL environment variable.
+                Defaults to None.
+
+        Example:
+            >>> # Automatic module name
+            >>> logger = AppLogger(os.path.splitext(os.path.basename(__file__))[0])
+            >>> # Explicit name and level
+            >>> logger = AppLogger("my_module", "DEBUG")
         """
         self.logger_name = logger_name
 
@@ -24,12 +69,31 @@ class AppLogger:
             self.log_level = self.set_log_level_from_env()
 
     def set_log_level_from_env(self) -> str:
-        """
-        Sets the logging level. If logging level was provided, use that; Otherwise, sets the logging
-        level from the environmental variable APP_LOG_LEVEL. If that is not set, uses the default logging level.
+        """Determine the logging level from the APP_LOG_LEVEL environment variable.
+
+        Reads the APP_LOG_LEVEL environment variable and validates it against Python's
+        standard logging levels. Falls back to INFO if the variable is not set or
+        contains an invalid value.
+
+        Valid logging levels (case-insensitive):
+            - DEBUG: Detailed information, typically for diagnosing problems
+            - INFO: Confirmation that things are working as expected
+            - WARNING: Indication of unexpected events or potential problems
+            - ERROR: Serious problems that prevent functionality
+            - CRITICAL: Critical problems that may cause the application to abort
 
         Returns:
-            str: the logging level
+            str: The validated logging level name (e.g., "DEBUG", "INFO", "WARNING")
+
+        Environment Variables:
+            APP_LOG_LEVEL: Desired logging level (case-insensitive). Falls back to
+                INFO if not set or invalid.
+
+        Example:
+            >>> os.environ['APP_LOG_LEVEL'] = 'DEBUG'
+            >>> logger = AppLogger("test")
+            >>> logger.set_log_level_from_env()
+            'DEBUG'
         """
         log_level = os.getenv("APP_LOG_LEVEL")
 
@@ -40,11 +104,34 @@ class AppLogger:
         return logging.getLevelName(log_level)
 
     def get_logger(self) -> logging.Logger:
-        """Instantiates and returns a new logger. THe logger will send all of its output
-        to sys.stdout.
+        """Create and configure a Python logger instance.
+
+        Instantiates a Python logging.Logger with the configured name and level,
+        attached to a StreamHandler that outputs to stdout. The logger uses a
+        standardized format with timestamps.
+
+        Log Format:
+            YYYY-MM-DD HH:MM:SS LEVEL logger_name: message
+
+        Behavior:
+            - Clears any existing handlers to prevent duplicate log messages
+            - Sets propagate=False to prevent messages from bubbling up to root logger
+            - Outputs an initial INFO message confirming the log level
 
         Returns:
-            logging.Logger: an instance of the class logger
+            logging.Logger: Configured logger instance ready for use throughout
+                the application
+
+        Example:
+            >>> logger = AppLogger("my_module").get_logger()
+            >>> logger.debug("Debug message")
+            >>> logger.info("Info message")
+            >>> logger.warning("Warning message")
+            >>> logger.error("Error message")
+
+        Note:
+            All log output is sent to sys.stdout, not stderr, for easier
+            redirection and integration with other tools.
         """
 
         logger = logging.getLogger(self.logger_name)

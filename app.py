@@ -1,3 +1,16 @@
+"""
+LLM Voice Chat Application
+
+A Gradio-based web interface for conversing with large language models (LLMs)
+from OpenAI or local Ollama models. Features streaming responses with optional
+text-to-speech output and customizable UI themes.
+
+This is the main application entry point that:
+- Loads configuration from JSON files (model, prompt, response, theme)
+- Initializes the LLM and text-to-speech engine
+- Creates and launches the Gradio chat interface
+"""
+
 import os
 from time import sleep
 from threading import Thread
@@ -21,16 +34,31 @@ _DEFAULT_RESPONSE_DELAY_TIME = 0
 
 
 def load_app_theme(theme_config: dict) -> gr.themes.ThemeClass:
-    """Load the application theme from the theme configuration.
-        The `source_theme` property of the theme_config can be used to specify the base underlying theme, ex. 'soft', 'monochrome', etc.
-        If the `source_theme` is a reference to themes available on HuggingFace, set `load_theme_from_hf_hub` to True in the theme_config.
-        If the theme is being loaded from a private HuggingFace repository, you will need to set the HF_TOKEN environmental variable.
+    """Load and configure the Gradio application theme.
+
+    Supports both built-in Gradio themes and custom themes from HuggingFace Hub.
+    The theme can be customized with properties like primary_hue, font, etc.
+
+    Theme Configuration Options:
+        - source_theme: Base theme name (e.g., 'soft', 'monochrome', 'default')
+        - load_theme_from_hf_hub: If True, loads theme from HuggingFace Hub
+        - hf_hub_theme_name: Name of the HuggingFace Hub theme to load
+        - primary_hue: Primary color hue for the theme
+        - font: Font family stack for the UI
+        - app_name: Application title (removed from theme config before applying)
+        - chat_placeholder_text: Chat area placeholder (removed from theme config)
+        - textbox_placeholder_text: Input box placeholder (removed from theme config)
+
+    Environment Variables:
+        HF_TOKEN: Required for loading themes from private HuggingFace repositories
 
     Args:
-        theme_config (dict): configuration for the Gradio app theme. Will load the "Soft" theme by default.
+        theme_config (dict): Configuration dictionary for the Gradio app theme.
+            Will load the "Soft" theme by default if source_theme is not specified.
 
     Returns:
-        gr.themes.ThemeClass: the theme object
+        gr.themes.ThemeClass: Configured Gradio theme object ready to be applied
+            to the ChatInterface.
     """
     source_theme_name = theme_config.get("source_theme", _DEFAULT_APP_THEME).title()
     if theme_config.get("load_theme_from_hf_hub", False):
@@ -58,19 +86,36 @@ def get_response(
     message,
     history,
 ) -> Generator:
-    """Get a response for the user's prompt. The response can also streamed by
-    setting the following two parameters in the response configuration:
-        1. response_delay_time: the number of seconds to wait before starting streaming.
-        2.response_stream_lag_time: the number of seconds to lag while streaming.
-        3. speech_rate_wpm: The number of words per minutes for the text-to-speech engine
+    """Generate a streaming response from the LLM with optional text-to-speech.
 
+    This function is the main callback for the Gradio ChatInterface. It:
+    1. Sends the user's message to the LLM along with optional chat history
+    2. Waits for the configured response delay time
+    3. Optionally speaks the response in a separate thread using TTS
+    4. Streams the response character-by-character with configurable lag time
+
+    Response Configuration Parameters (from response_config):
+        - response_delay_time: Seconds to wait before starting the response stream
+        - response_stream_lag_time: Seconds to pause between each character
+        - speak_responses: Boolean to enable/disable text-to-speech
+        - speech_rate_wpm: Words per minute for the text-to-speech engine
+        - voice_name: System voice name for text-to-speech
+
+    The text-to-speech runs in a separate thread to avoid blocking the
+    streaming UI response, allowing users to see and hear the response
+    simultaneously.
 
     Args:
-        message (str): the message to be streamed
-        response_config (dict): configurations for the response
+        message (str): The user's current message/question to the LLM
+        history (list): Chat history in Gradio format - list of message dictionaries
+            with 'role' and 'content' keys
+
+    Yields:
+        str: Progressively longer substrings of the complete response, creating
+            a character-by-character streaming effect in the UI
 
     Returns:
-        Generator: the streamed response
+        Generator: Generator that yields the streaming response text
     """
 
     logger.debug(f"User asked the following:\n{message}")
