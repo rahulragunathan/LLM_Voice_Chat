@@ -1,4 +1,4 @@
-# python version: 3.11.10
+# python version: 3.12+
 
 # Core dependencies
 gradio==5.31.0

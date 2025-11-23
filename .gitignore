@@ -152,6 +152,9 @@ env/**/*.env
 .dmypy.json
 dmypy.json
 
+# Claude
+.claude
+
 # Pyre type checker
 .pyre/
 

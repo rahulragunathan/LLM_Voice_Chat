@@ -23,9 +23,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Documentation**: Example configuration files in env/soothsayers/
 
 ### Changed
+- **BREAKING**: Python version requirement upgraded from 3.11+ to 3.12+
+- **BREAKING**: Split configuration mode removed - only unified configuration is supported
 - Configuration loading now includes validation by default
 - Error messages provide clearer guidance on configuration issues
 - Ollama model responses now support conversation context like OpenAI models
+- Testing framework changed from unittest to pytest
+- Environment configuration simplified to use single CONFIG_PATH variable
 
 ### Fixed
 - Removed exposed API keys from example environment files

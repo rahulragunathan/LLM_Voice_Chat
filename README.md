@@ -26,7 +26,7 @@ To use OpenAI models, you will need to create an [OpenAI API Key](https://platfo
 
 ### Python Environment
 
-Python 3.11+ is recommended. Using a Python virtual environment is strongly recommended.
+Python 3.12 or higher is required. Using a Python virtual environment is strongly recommended.
 
 Install the required libraries in your Python environment:
 
