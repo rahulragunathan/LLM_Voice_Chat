@@ -49,37 +49,34 @@ pip install -r requirements.txt
 LLM_Voice_Chat/
 ├── app.py                          # Main application entry point
 ├── app_config.py                   # Configuration loader
+├── config_validator.py             # Configuration validation
 ├── model_utils.py                  # LLM loading and response logic
 ├── text_to_speech.py              # Text-to-speech engine
 ├── logger.py                       # Logging utility
 ├── requirements.txt                # Python dependencies
 ├── start_app.sh                    # Bash startup script
 ├── start_app.bat                   # Windows startup script
-├── config/                         # Default configuration templates
-│   ├── model_config_chatgpt_default.json
-│   ├── model_config_ollama_llama3.1.json
-│   ├── model_config_ollama_tinyllama.json
-│   ├── prompt_config_default.json
-│   ├── response_config_default.json
-│   └── theme_config_default.json
+├── config/                         # Configuration files
+│   ├── unified_config_example.json       # OpenAI example config
+│   └── unified_config_ollama_example.json # Ollama example config
+├── tests/                          # Test suite
+│   ├── test_config_validator.py
+│   └── test_app_config.py
 └── test/
     └── check_voices.ipynb          # Utility to check available TTS voices
 ```
 
 ## Configuration
 
-The application uses four JSON configuration files controlled via environment variables:
+The application uses a unified JSON configuration file that contains all settings organized in sections: model, prompt, response, and theme.
 
 ### Environment Variables
 
 Create a `.env` file with the following variables:
 
 ```bash
-# Required
-MODEL_CONFIG_PATH=./config/model_config_chatgpt_default.json
-PROMPT_CONFIG_PATH=./config/prompt_config_default.json
-RESPONSE_CONFIG_PATH=./config/response_config_default.json
-THEME_CONFIG_PATH=./config/theme_config_default.json
+# Required: Path to unified configuration file
+CONFIG_PATH=./config/unified_config_example.json
 
 # Required for OpenAI models only
 OPENAI_API_KEY=your-api-key-here
@@ -88,43 +85,108 @@ OPENAI_API_KEY=your-api-key-here
 APP_LOG_LEVEL=DEBUG
 ```
 
-### Configuration Files
+### Unified Configuration File
 
-#### 1. Model Configuration
+All application settings are stored in a single JSON file with the following structure:
 
-Controls which LLM to use and its parameters.
-
-**OpenAI Example** (`model_config_chatgpt_default.json`):
 ```json
 {
+  "app_name": "LLM Voice Chat",
+  "version": "1.0.0",
+  "model": { ... },
+  "prompt": { ... },
+  "response": { ... },
+  "theme": { ... }
+}
+```
+
+#### OpenAI Example
+
+See [config/unified_config_example.json](config/unified_config_example.json):
+
+```json
+{
+  "app_name": "LLM Voice Chat",
+  "version": "1.0.0",
+  "model": {
     "use_remote_model": true,
     "model_source": "OpenAI",
     "model_name": "gpt-4o",
     "model_parameters": {
-        "temperature": 1.0
+      "temperature": 1.0
     },
     "send_chat_history": true
+  },
+  "prompt": {
+    "input_variables": ["question"],
+    "template": "{question}",
+    "template_format": "f-string"
+  },
+  "response": {
+    "speak_responses": true,
+    "response_delay_time": 3,
+    "response_stream_lag_time": 0.04,
+    "voice_name": "Samantha",
+    "speech_rate_wpm": 140
+  },
+  "theme": {
+    "chat_placeholder_text": "Please ask me a question.",
+    "textbox_placeholder_text": "Please ask me a question.",
+    "source_theme": "soft",
+    "load_theme_from_hf_hub": false,
+    "primary_hue": "red",
+    "font": ["IBM Plex Mono", "ui-monospace", "Consolas", "monospace"]
+  }
 }
 ```
 
-**Ollama Example** (`model_config_ollama_llama3.1.json`):
+#### Ollama Example
+
+See [config/unified_config_ollama_example.json](config/unified_config_ollama_example.json):
+
 ```json
 {
+  "app_name": "LLM Voice Chat - Ollama",
+  "version": "1.0.0",
+  "model": {
     "use_remote_model": false,
     "model_source": "Ollama",
     "model_name": "llama3.1",
     "use_gpu": true,
     "num_gpu": 1,
     "model_parameters": {
-        "top_k": 40,
-        "top_p": 0.9,
-        "temperature": 0.8,
-        "min_p": 0.0,
-        "repeat_penalty": 1.18
+      "top_k": 40,
+      "top_p": 0.9,
+      "temperature": 0.8,
+      "min_p": 0.0,
+      "repeat_penalty": 1.18
     },
     "send_chat_history": true
+  },
+  "prompt": {
+    "input_variables": ["question"],
+    "template": "{question}",
+    "template_format": "f-string"
+  },
+  "response": {
+    "speak_responses": false,
+    "response_delay_time": 0,
+    "response_stream_lag_time": 0.02
+  },
+  "theme": {
+    "chat_placeholder_text": "Ask me anything...",
+    "textbox_placeholder_text": "Type your question here...",
+    "source_theme": "soft",
+    "load_theme_from_hf_hub": false
+  }
 }
 ```
+
+### Configuration Sections
+
+#### Model Configuration
+
+Controls which LLM to use and its parameters.
 
 **Available Parameters:**
 - `use_remote_model`: `true` for OpenAI, `false` for Ollama
@@ -135,52 +197,37 @@ Controls which LLM to use and its parameters.
 - `use_gpu`: Enable GPU acceleration (Ollama only)
 - `num_gpu`: Number of GPUs to use (Ollama only)
 
-#### 2. Prompt Configuration
+#### Prompt Configuration
 
 Defines the system prompt template using LangChain's PromptTemplate format.
 
-**Example** (`prompt_config_default.json`):
+**Available Parameters:**
+- `input_variables`: List of variable names used in template
+- `template`: Prompt template string with placeholders
+- `template_format`: Template format (usually `"f-string"`)
+- `output_parser`: Optional output parser (usually `null`)
+- `partial_variables`: Optional partial variable substitutions
+- `validate_template`: Whether to validate template variables
+
+**Customization Example:**
 ```json
-{
-    "input_variables": ["question"],
-    "output_parser": null,
-    "partial_variables": {},
-    "template": "{question}",
-    "template_format": "f-string",
-    "validate_template": true
+"prompt": {
+  "input_variables": ["question"],
+  "template": "You are a helpful assistant. Answer the following question: {question}",
+  "template_format": "f-string"
 }
 ```
 
-You can customize the template to add system instructions:
-```json
-{
-    "input_variables": ["question"],
-    "template": "You are a helpful assistant. Answer the following question: {question}",
-    "template_format": "f-string"
-}
-```
-
-#### 3. Response Configuration
+#### Response Configuration
 
 Controls text-to-speech and response streaming behavior.
 
-**Example** (`response_config_default.json`):
-```json
-{
-    "speak_responses": true,
-    "response_delay_time": 3,
-    "response_stream_lag_time": 0.04,
-    "voice_name": "Fred",
-    "speech_rate_wpm": 140
-}
-```
-
-**Parameters:**
+**Available Parameters:**
 - `speak_responses`: Enable/disable text-to-speech (`true`/`false`)
 - `response_delay_time`: Delay in seconds before starting response
 - `response_stream_lag_time`: Delay between characters for typing effect (seconds)
-- `voice_name`: System voice name (platform-specific)
-- `speech_rate_wpm`: Speech rate in words per minute
+- `voice_name`: System voice name (platform-specific, optional)
+- `speech_rate_wpm`: Speech rate in words per minute (optional)
 
 **Platform-specific default voices:**
 - macOS: `"Samantha"`
@@ -189,33 +236,19 @@ Controls text-to-speech and response streaming behavior.
 
 To check available voices on your system, see [test/check_voices.ipynb](test/check_voices.ipynb).
 
-#### 4. Theme Configuration
+#### Theme Configuration
 
 Customizes the Gradio UI appearance.
 
-**Example** (`theme_config_default.json`):
-```json
-{
-    "app_name": "LLM Chat",
-    "chat_placeholder_text": "Please ask me a question.",
-    "textbox_placeholder_text": "Please ask me a question.",
-    "source_theme": "soft",
-    "load_theme_from_hf_hub": false,
-    "hf_hub_theme_name": null,
-    "primary_hue": "red",
-    "font": ["IBM Plex Mono", "ui-monospace", "Consolas", "monospace"]
-}
-```
-
-**Parameters:**
-- `app_name`: Application title displayed in the UI
+**Available Parameters:**
+- `app_name`: Application title displayed in the UI (optional, defaults to top-level app_name)
 - `chat_placeholder_text`: Placeholder for chat history area
 - `textbox_placeholder_text`: Placeholder for input textbox
 - `source_theme`: Built-in Gradio theme (e.g., `"soft"`, `"default"`, `"monochrome"`)
 - `load_theme_from_hf_hub`: Load custom theme from HuggingFace Hub
-- `hf_hub_theme_name`: HuggingFace Hub theme name (if loading from hub)
-- `primary_hue`: Primary color hue
-- `font`: Font family stack for the UI
+- `hf_hub_theme_name`: HuggingFace Hub theme name (if loading from hub, optional)
+- `primary_hue`: Primary color hue (optional)
+- `font`: Font family stack for the UI (optional)
 
 ## Starting the Application
 
@@ -269,8 +302,52 @@ The script will:
 ### Logging
 Set `APP_LOG_LEVEL=DEBUG` in your `.env` file for detailed logging output.
 
+## Testing
+
+Run the test suite to verify your installation:
+
+```bash
+pytest
+```
+
+Or with verbose output:
+
+```bash
+pytest -v
+```
+
+Tests cover:
+- Configuration validation
+- Configuration loading
+- Error handling
+
+## Recent Improvements
+
+- **Security**: Removed exposed API keys and added .env.example templates
+- **Feature**: Chat history now works for both OpenAI and Ollama models
+- **Feature**: Unified configuration format for simpler setup
+- **Quality**: Automatic configuration validation on startup with clear error messages
+- **Quality**: Comprehensive error handling throughout the application
+- **Testing**: Unit test suite for core functionality
+- **Documentation**: Complete docstrings for all modules and functions
+
+See [CHANGELOG.md](CHANGELOG.md) for full version history.
+
 ## License
 
 MIT License - see [LICENSE](LICENSE) for details.
 
 Copyright (c) 2024 Rahul Ragunathan
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit issues or pull requests.
+
+### Setup for Development
+
+1. Clone the repository
+2. Create a virtual environment: `python -m venv venv`
+3. Activate the virtual environment
+4. Install dependencies: `pip install -r requirements.txt`
+5. Copy `.env.example` to `.env` and configure
+6. Run tests: `pytest`

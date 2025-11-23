@@ -1,0 +1,37 @@
+{
+  "app_name": "LLM Voice Chat",
+  "version": "1.0.0",
+  "model": {
+    "use_remote_model": true,
+    "model_source": "OpenAI",
+    "model_name": "gpt-4o",
+    "model_parameters": {
+      "temperature": 1.0
+    },
+    "send_chat_history": true
+  },
+  "prompt": {
+    "input_variables": ["question"],
+    "output_parser": null,
+    "partial_variables": {},
+    "template": "{question}",
+    "template_format": "f-string",
+    "validate_template": true
+  },
+  "response": {
+    "speak_responses": true,
+    "response_delay_time": 3,
+    "response_stream_lag_time": 0.04,
+    "voice_name": "Samantha",
+    "speech_rate_wpm": 140
+  },
+  "theme": {
+    "chat_placeholder_text": "Please ask me a question.",
+    "textbox_placeholder_text": "Please ask me a question.",
+    "source_theme": "soft",
+    "load_theme_from_hf_hub": false,
+    "hf_hub_theme_name": null,
+    "primary_hue": "red",
+    "font": ["IBM Plex Mono", "ui-monospace", "Consolas", "monospace"]
+  }
+}

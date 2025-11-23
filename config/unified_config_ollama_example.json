@@ -1,0 +1,35 @@
+{
+  "app_name": "LLM Voice Chat - Ollama",
+  "version": "1.0.0",
+  "model": {
+    "use_remote_model": false,
+    "model_source": "Ollama",
+    "model_name": "llama3.1",
+    "use_gpu": true,
+    "num_gpu": 1,
+    "model_parameters": {
+      "top_k": 40,
+      "top_p": 0.9,
+      "temperature": 0.8,
+      "min_p": 0.0,
+      "repeat_penalty": 1.18
+    },
+    "send_chat_history": true
+  },
+  "prompt": {
+    "input_variables": ["question"],
+    "template": "{question}",
+    "template_format": "f-string"
+  },
+  "response": {
+    "speak_responses": false,
+    "response_delay_time": 0,
+    "response_stream_lag_time": 0.02
+  },
+  "theme": {
+    "chat_placeholder_text": "Ask me anything...",
+    "textbox_placeholder_text": "Type your question here...",
+    "source_theme": "soft",
+    "load_theme_from_hf_hub": false
+  }
+}

@@ -322,30 +322,51 @@ def _get_ollama_response(
     system_prompt_template: PromptTemplate,
     send_chat_history: bool,
 ) -> str:
-    """Get a response from a local Ollama model.
+    """Get a response from a local Ollama model with optional chat history.
 
     Creates a LangChain chain by composing the prompt template with the Ollama LLM.
-    Currently, this implementation does not utilize the chat history parameter
-    (the send_chat_history parameter is present for interface consistency but
-    not currently used in the Ollama implementation).
+    If chat history is enabled, it formats the conversation history into a
+    single context string and includes it with the current message.
 
     Args:
         message (str): The user's current message/question
-        history (list): Chat history (currently not used in Ollama implementation)
+        history (list): Chat history in Gradio format - list of message
+            dictionaries with 'role' ('user' or 'assistant') and 'content' keys.
+            Can be None or empty.
         llm (OllamaLLM): Initialized Ollama model instance
         system_prompt_template (PromptTemplate): Template for formatting the user's
             message with system instructions
-        send_chat_history (bool): Whether to send chat history (parameter present
-            for interface consistency, currently not implemented for Ollama)
+        send_chat_history (bool): If True, includes full conversation history in
+            the request. If False, only sends the current message.
 
     Returns:
         str: The text response from the Ollama model
 
     Note:
-        Unlike the OpenAI implementation, this currently sends only the formatted
-        current message without chat history. Future enhancements may add chat
-        history support for Ollama models.
+        Chat history is formatted as a conversation context string that is
+        prepended to the current question in the template. This provides
+        context-aware responses similar to the OpenAI implementation.
     """
+    # Build conversation context if history is enabled
+    conversation_context = ""
+    if send_chat_history and history is not None and len(history) > 0:
+        logger.debug(
+            f"Sending chat history to model. Received the following: {history}"
+        )
+        conversation_parts = []
+        for history_message in history:
+            role = (
+                "User" if history_message["role"] == "user" else "Assistant"
+            )
+            content = history_message["content"]
+            conversation_parts.append(f"{role}: {content}")
+
+        conversation_context = (
+            "Previous conversation:\n" + "\n".join(conversation_parts) + "\n\n"
+        )
+
+    # Combine conversation context with current message
+    full_message = conversation_context + message
 
     chain = system_prompt_template | llm
-    return chain.invoke(message)
+    return chain.invoke(full_message)
