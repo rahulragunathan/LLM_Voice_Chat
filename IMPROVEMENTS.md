@@ -145,11 +145,11 @@ pytest tests/test_config_validator.py
 
 1. `config_validator.py` - Validation module
 2. `.env.example` - Root environment template
-3. `env/soothsayers/soothsayers_chatgpt.env.example` - ChatGPT env template
-4. `env/soothsayers/soothsayers_deepseek_local.env.example` - Ollama env template
-5. `config/unified_config_example.json` - Unified config example (OpenAI)
-6. `config/unified_config_ollama_example.json` - Unified config example (Ollama)
-7. `CHANGELOG.md` - Version history
+3. `config/unified_config_example.json` - Unified config example (OpenAI)
+4. `config/unified_config_ollama_example.json` - Unified config example (Ollama)
+5. `env/soothsayers/unified_config_soothsayers.json` - Unified config for "The Oracle" theme
+6. `CHANGELOG.md` - Version history
+7. `pytest.ini` - Pytest configuration
 8. `tests/__init__.py` - Test package
 9. `tests/test_config_validator.py` - Validation tests
 10. `tests/test_app_config.py` - Config loading tests
@@ -159,13 +159,12 @@ pytest tests/test_config_validator.py
 
 1. `.gitignore` - Enhanced security patterns
 2. `.env.example` - Updated to use unified CONFIG_PATH
-3. `env/soothsayers/soothsayers_chatgpt.env` - Removed API key
-4. `env/soothsayers/soothsayers_deepseek_local.env` - Removed API key
-5. `app_config.py` - Rewritten to support unified configuration
-6. `model_utils.py` - Added Ollama chat history support
-7. `README.md` - Updated with unified configuration documentation
-8. `requirements.txt` - Added pytest and pytest-cov
-9. `tests/test_config_validator.py` - Updated tests with environment variable mocking
+3. `env/soothsayers/soothsayers_chatgpt.env` - Updated to use unified CONFIG_PATH, removed API key
+4. `app_config.py` - Rewritten to support unified configuration
+5. `model_utils.py` - Added Ollama chat history support
+6. `README.md` - Updated with unified configuration documentation
+7. `requirements.txt` - Added pytest and pytest-cov
+8. `tests/test_config_validator.py` - Updated tests with environment variable mocking
 
 ## Security Notice
 

@@ -1,7 +1,0 @@
-{
-    "app_name": "LLM Chat",
-    "chat_placeholder_text": "Please ask me a question.",
-    "textbox_placeholder_text": "Please ask me a question.",
-    "source_theme": "soft",
-    "load_theme_from_hf_hub": false
-}
